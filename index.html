@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#eef0e2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<title>Save the Date — Solve to Reveal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#fffdf8;
+    --ink:#3d4a35;
+    --tile:#fdfcf5;
+    --tile-ink:#3d4a35;
+    --conn-yellow:#e8c987;
+    --conn-green:#a9c48f;
+    --conn-blue:#f2c4bc;
+    --conn-purple:#e3ab84;
+    --muted:#a89f7f;
+    --hairline:#ece3c8;
+    --gold:#c9a24b;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+
+  html{ overflow-x:hidden; }
+
+  body{
+    background:#eef0e2;
+    font-family:'DM Sans', sans-serif;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    min-height:100vh;
+    min-height:100dvh;
+    padding:36px 16px;
+    padding-top:calc(36px + env(safe-area-inset-top));
+    padding-bottom:calc(36px + env(safe-area-inset-bottom));
+    padding-left:calc(16px + env(safe-area-inset-left));
+    padding-right:calc(16px + env(safe-area-inset-right));
+    overflow-x:hidden;
+    -webkit-text-size-adjust:100%;
+  }
+
+  .stage{
+    width:100%;
+    max-width:480px;
+    background:var(--paper);
+    border:1px solid var(--gold);
+    border-radius:16px;
+    padding:28px 20px;
+  }
+
+  .masthead{
+    text-align:center;
+    border-bottom:1px solid var(--gold);
+    padding-bottom:12px;
+    margin-bottom:22px;
+  }
+  .masthead .kicker{
+    font-size:10px;
+    letter-spacing:0.18em;
+    font-weight:700;
+    text-transform:uppercase;
+    color:#7f9c62;
+  }
+  .masthead h1{
+    font-family:'Libre Caslon Text', serif;
+    font-size:30px;
+    margin-top:4px;
+  }
+  .masthead .flourish{
+    color:var(--gold);
+    font-size:14px;
+    margin-top:6px;
+    letter-spacing:0.1em;
+  }
+  .masthead .instructions{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:8px;
+    line-height:1.5;
+  }
+
+  .mistakes{
+    text-align:center;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
+  .mistake-dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--ink);
+    opacity:0.15;
+  }
+  .mistake-dot.used{ opacity:0.85; }
+
+  .solved-groups{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .solved-group{
+    border-radius:8px;
+    padding:14px;
+    text-align:center;
+    animation: dropIn 0.4s ease;
+  }
+  .solved-group .cat{
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-bottom:3px;
+  }
+  .solved-group .words{
+    font-family:'Libre Caslon Text', serif;
+    font-size:15px;
+  }
+  .solved-group.yellow{ background:var(--conn-yellow); border:1px solid #b5883a; color:#5c4110; }
+  .solved-group.green{ background:var(--conn-green); border:1px solid #7fa25f; color:#2e4720; }
+  .solved-group.blue{ background:var(--conn-blue); border:1px solid #dba79a; color:#7a3d2f; }
+  .solved-group.purple{ background:var(--conn-purple); border:1px solid #c48350; color:#5c3616; }
+
+  @keyframes dropIn{
+    from{ opacity:0; transform:translateY(-10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:8px;
+    margin-bottom:20px;
+  }
+  .tile{
+    aspect-ratio: 1.4 / 1;
+    background:var(--tile);
+    color:var(--tile-ink);
+    border:1px solid var(--hairline);
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-family:'DM Sans', sans-serif;
+    font-weight:700;
+    font-size:clamp(10.5px, 3.1vw, 12.5px);
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    cursor:pointer;
+    touch-action:manipulation;
+    overflow-wrap:break-word;
+    word-break:break-word;
+    hyphens:auto;
+    padding:4px;
+    transition:transform 0.1s ease, background 0.15s ease;
+  }
+  .tile:hover{ background:#f7f0dc; border-color:var(--gold); }
+  .tile.tile-sm{
+    font-size:clamp(8.5px, 2.5vw, 10.5px);
+    white-space:nowrap;
+    letter-spacing:0;
+  }
+  .tile.tile-xs{
+    font-size:clamp(7.5px, 2.1vw, 9px);
+    white-space:nowrap;
+    letter-spacing:0;
+  }
+  .tile.selected{
+    background:var(--ink);
+    color:#fff;
+    border-color:var(--ink);
+    transform:scale(0.96);
+  }
+  .tile.shake{
+    animation: shake 0.4s ease;
+  }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-6px); }
+    40%{ transform:translateX(6px); }
+    60%{ transform:translateX(-4px); }
+    80%{ transform:translateX(4px); }
+  }
+
+  .controls{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+  }
+  .btn{
+    font-family:'DM Sans', sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    padding:13px 20px;
+    min-height:44px;
+    border-radius:999px;
+    border:1.5px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    cursor:pointer;
+    touch-action:manipulation;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .btn:hover{ background:var(--ink); color:#fff; }
+  .btn:disabled{ opacity:0.35; cursor:default; }
+  .btn:disabled:hover{ background:transparent; color:var(--ink); }
+  .btn.primary{ background:var(--ink); color:#fff; }
+  .btn.primary:hover{ background:#000; }
+
+  /* Reveal overlay */
+  .reveal{
+    position:fixed;
+    inset:0;
+    background:rgba(61,74,53,0.82);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.5s ease;
+    z-index:10;
+  }
+  .reveal.show{ opacity:1; pointer-events:auto; }
+  .reveal-card{
+    background:linear-gradient(160deg, #fffdf8 0%, #fdf6e6 100%);
+    color:var(--ink);
+    max-width:400px;
+    width:100%;
+    border-radius:16px;
+    border:1px solid var(--gold);
+    padding:38px 30px 32px;
+    text-align:center;
+    transform:translateY(16px) scale(0.97);
+    transition:transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  }
+  .reveal.show .reveal-card{ transform:translateY(0) scale(1); }
+  .reveal-card .solved-tag{
+    font-size:10px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  .reveal-card h2{
+    font-family:'Libre Caslon Text', serif;
+    font-size:26px;
+    margin-bottom:14px;
+  }
+  .reveal-card .cordial-invite{
+    font-family:'Libre Caslon Text', serif;
+    font-size:19px;
+    color:var(--ink);
+    line-height:1.4;
+    margin-bottom:22px;
+  }
+  .reveal-line{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-top:1px solid var(--hairline);
+    font-size:14px;
+    text-align:left;
+  }
+  .reveal-line:last-of-type{ border-bottom:1px solid var(--hairline); }
+  .reveal-line .label{
+    color:var(--muted);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:10px;
+    letter-spacing:0.08em;
+    padding-top:2px;
+  }
+  .reveal-line .value{
+    font-family:'Libre Caslon Text', serif;
+    font-size:15px;
+    text-align:right;
+  }
+  .reveal-card .signoff{
+    margin-top:22px;
+    font-family:'Libre Caslon Text', serif;
+    font-style:italic;
+    font-size:15px;
+    color:var(--muted);
+  }
+  .reveal-card .website-link{
+    display:inline-block;
+    margin-top:18px;
+    padding:11px 22px;
+    min-height:44px;
+    line-height:22px;
+    border-radius:999px;
+    border:1.5px solid var(--gold);
+    color:#8a6a2c;
+    background:#fdf6e6;
+    font-family:'DM Sans', sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    text-decoration:none;
+    touch-action:manipulation;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .reveal-card .website-link:hover{
+    background:var(--gold);
+    color:#fff;
+  }
+  .password-note{
+    margin-top:8px;
+    font-size:11px;
+    letter-spacing:0.03em;
+    color:var(--muted);
+  }
+  .password-copy{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-family:'DM Sans', sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:0.02em;
+    color:#8a6a2c;
+    background:#f5ecd8;
+    border:1px solid var(--hairline);
+    border-radius:999px;
+    padding:3px 10px;
+    cursor:pointer;
+    touch-action:manipulation;
+    transition:background 0.15s ease, border-color 0.15s ease;
+  }
+  .password-copy:hover{ background:#f0e2c4; border-color:var(--gold); }
+  .password-copy .copy-icon{ font-size:11px; opacity:0.7; }
+  .password-copy.copied{ background:var(--conn-green); border-color:#7fa25f; color:#2e4720; }
+  .reveal-watermark{
+    margin-top:14px;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#c9bfa0;
+  }
+  .watermark{
+    text-align:center;
+    margin-top:24px;
+    padding-top:16px;
+    border-top:1px solid var(--hairline);
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#c9bfa0;
+  }
+  .watermark a{
+    color:#c9bfa0;
+    text-decoration:none;
+    letter-spacing:0.14em;
+  }
+  .watermark a:hover{ text-decoration:underline; }
+
+  @media (max-width: 360px){
+    body{ padding-left:calc(10px + env(safe-area-inset-left)); padding-right:calc(10px + env(safe-area-inset-right)); }
+    .stage{ padding:22px 14px; }
+    .masthead h1{ font-size:26px; }
+    .grid{ gap:6px; }
+    .reveal-card{ padding:30px 20px 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <div class="masthead">
+    <div class="kicker">Milun &amp; Rashika's Save the Date Wedition!</div>
+    <h1>Connections</h1>
+    <div class="flourish">❧</div>
+    <div class="instructions">Find four groups of four. Tap words, then submit a guess. Solve all four to reveal the details.</div>
+  </div>
+
+  <div class="mistakes">
+    Mistakes remaining
+    <span class="mistake-dot" data-dot="1"></span>
+    <span class="mistake-dot" data-dot="2"></span>
+    <span class="mistake-dot" data-dot="3"></span>
+    <span class="mistake-dot" data-dot="4"></span>
+  </div>
+
+  <div class="solved-groups" id="solvedGroups"></div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="controls">
+    <button class="btn" id="shuffleBtn">Shuffle</button>
+    <button class="btn" id="deselectBtn">Deselect all</button>
+    <button class="btn primary" id="submitBtn" disabled>Submit</button>
+  </div>
+
+  <div class="watermark"><a href="https://milandshik.com" target="_blank" rel="noopener">MilAndShik.com</a></div>
+
+</div>
+
+<canvas id="confettiCanvas" style="position:fixed; inset:0; pointer-events:none; z-index:20;"></canvas>
+
+<div class="reveal" id="reveal">
+  <div class="reveal-card">
+    <div class="solved-tag">You've solved it! ✓</div>
+    <div class="cordial-invite">You made the connections, now come celebrate ours! 💛</div>
+    <div class="reveal-line"><span class="label">When</span><span class="value">May 8, 2027</span></div>
+    <div class="reveal-line"><span class="label">Where</span><span class="value">Orlando, FL</span></div>
+    <a class="website-link" href="https://milandshik.com" target="_blank" rel="noopener">Visit our wedding website →</a>
+    <div class="password-note">Password: <button class="password-copy" id="passwordCopy" data-password="chuffed2bits">chuffed2bits <span class="copy-icon">⧉</span></button></div>
+    <div class="signoff">With love, Mil &amp; Shik</div>
+    <div class="reveal-watermark">MilAndShik.com</div>
+  </div>
+</div>
+
+<script>
+  const categories = [
+    { id:'yellow', name: 'PLACES WE\'VE CALLED HOME', words: ['LEAMINGTON','SWEDESBORO','PHILADELPHIA','LOS ANGELES'] },
+    { id:'green',  name: 'AIRLINE HUBS FROM LONG DISTANCE', words: ['DELTA','AMERICAN','BRITISH','VIRGIN'] },
+    { id:'blue',   name: 'WEDDING WEEKEND ITINERARY', words: ['SANGEET','CHURCH','COCKTAIL HOUR','RECEPTION'] },
+    { id:'purple', name: 'ORLANDO', words: ['GATORS','SUNSHINE','MICKEY','MAGICAL'] },
+  ];
+
+  let words = [];
+  categories.forEach(cat => {
+    cat.words.forEach(w => words.push({ word: w, catId: cat.id }));
+  });
+
+  function shuffle(arr){
+    for(let i = arr.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  words = shuffle(words);
+
+  let selected = [];
+  let solvedCats = [];
+  let mistakes = 0;
+  const maxMistakes = 4;
+
+  const grid = document.getElementById('grid');
+  const submitBtn = document.getElementById('submitBtn');
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  const deselectBtn = document.getElementById('deselectBtn');
+  const solvedGroupsEl = document.getElementById('solvedGroups');
+  const reveal = document.getElementById('reveal');
+
+  function lengthClass(word){
+    const len = word.length;
+    if(len > 12) return ' tile-xs';
+    if(len > 8) return ' tile-sm';
+    return '';
+  }
+
+  function render(){
+    grid.innerHTML = '';
+    const remaining = words.filter(w => !solvedCats.includes(w.catId));
+    remaining.forEach(w => {
+      const btn = document.createElement('button');
+      btn.className = 'tile' + lengthClass(w.word) + (selected.includes(w.word) ? ' selected' : '');
+      btn.textContent = w.word;
+      btn.addEventListener('click', () => toggleTile(w.word));
+      grid.appendChild(btn);
+    });
+    submitBtn.disabled = selected.length !== 4;
+    updateMistakeDots();
+  }
+
+  function toggleTile(word){
+    if(selected.includes(word)){
+      selected = selected.filter(w => w !== word);
+    } else {
+      if(selected.length >= 4) return;
+      selected.push(word);
+    }
+    render();
+  }
+
+  function updateMistakeDots(){
+    document.querySelectorAll('.mistake-dot').forEach((dot, i) => {
+      dot.classList.toggle('used', i < mistakes);
+    });
+  }
+
+  // --- Sound: soft synthesized chimes, no external audio files ---
+  let audioCtx = null;
+  function getAudioCtx(){
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+  function playTone(freq, startTime, duration, gainPeak, ctx){
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(gainPeak, startTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(startTime);
+    osc.stop(startTime + duration);
+  }
+  function playGroupChime(){
+    try{
+      const ctx = getAudioCtx();
+      const now = ctx.currentTime;
+      [523.25, 659.25, 783.99].forEach((freq, i) => {
+        playTone(freq, now + i * 0.07, 0.35, 0.12, ctx);
+      });
+    } catch(e){}
+  }
+  function playWinFanfare(){
+    try{
+      const ctx = getAudioCtx();
+      const now = ctx.currentTime;
+      [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+        playTone(freq, now + i * 0.11, 0.5, 0.14, ctx);
+      });
+    } catch(e){}
+  }
+
+  // --- Confetti: lightweight canvas burst, no external library ---
+  const confettiCanvas = document.getElementById('confettiCanvas');
+  const confettiCtx = confettiCanvas.getContext('2d');
+  const confettiColors = ['#e8c987', '#a9c48f', '#f2c4bc', '#e3ab84', '#c9a24b'];
+
+  function resizeConfettiCanvas(){
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+  resizeConfettiCanvas();
+  window.addEventListener('resize', resizeConfettiCanvas);
+
+  function launchConfetti(){
+    const pieces = [];
+    const count = 140;
+    for(let i = 0; i < count; i++){
+      pieces.push({
+        x: confettiCanvas.width / 2 + (Math.random() - 0.5) * 120,
+        y: confettiCanvas.height * 0.3,
+        vx: (Math.random() - 0.5) * 9,
+        vy: Math.random() * -9 - 4,
+        size: Math.random() * 7 + 4,
+        color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 12,
+        gravity: 0.28 + Math.random() * 0.08,
+        drag: 0.995,
+      });
+    }
+    let frame = 0;
+    const maxFrames = 220;
+    function animate(){
+      frame++;
+      confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      pieces.forEach(p => {
+        p.vx *= p.drag;
+        p.vy += p.gravity;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += p.rotSpeed;
+        confettiCtx.save();
+        confettiCtx.translate(p.x, p.y);
+        confettiCtx.rotate(p.rotation * Math.PI / 180);
+        confettiCtx.fillStyle = p.color;
+        confettiCtx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+        confettiCtx.restore();
+      });
+      if(frame < maxFrames){
+        requestAnimationFrame(animate);
+      } else {
+        confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      }
+    }
+    animate();
+  }
+
+  function checkSolved(){
+    if(solvedCats.length === categories.length){
+      setTimeout(() => {
+        reveal.classList.add('show');
+        launchConfetti();
+        playWinFanfare();
+      }, 500);
+    }
+  }
+
+  submitBtn.addEventListener('click', () => {
+    if(selected.length !== 4) return;
+    const catIds = selected.map(w => words.find(x => x.word === w).catId);
+    const allSame = catIds.every(c => c === catIds[0]);
+
+    if(allSame){
+      const cat = categories.find(c => c.id === catIds[0]);
+      solvedCats.push(cat.id);
+      const groupEl = document.createElement('div');
+      groupEl.className = 'solved-group ' + cat.id;
+      groupEl.innerHTML = `<div class="cat">${cat.name}</div><div class="words">${cat.words.join(', ')}</div>`;
+      solvedGroupsEl.appendChild(groupEl);
+      selected = [];
+      render();
+      playGroupChime();
+      checkSolved();
+    } else {
+      mistakes++;
+      const tiles = document.querySelectorAll('.tile.selected');
+      tiles.forEach(t => t.classList.add('shake'));
+      setTimeout(() => tiles.forEach(t => t.classList.remove('shake')), 400);
+      updateMistakeDots();
+      if(mistakes >= maxMistakes){
+        selected = [];
+        setTimeout(() => {
+          categories.forEach(cat => {
+            if(!solvedCats.includes(cat.id)){
+              solvedCats.push(cat.id);
+              const groupEl = document.createElement('div');
+              groupEl.className = 'solved-group ' + cat.id;
+              groupEl.innerHTML = `<div class="cat">${cat.name}</div><div class="words">${cat.words.join(', ')}</div>`;
+              solvedGroupsEl.appendChild(groupEl);
+            }
+          });
+          render();
+          checkSolved();
+        }, 450);
+      }
+    }
+  });
+
+  shuffleBtn.addEventListener('click', () => {
+    const remaining = words.filter(w => !solvedCats.includes(w.catId));
+    const rest = words.filter(w => solvedCats.includes(w.catId));
+    words = [...shuffle(remaining), ...rest];
+    render();
+  });
+
+  deselectBtn.addEventListener('click', () => {
+    selected = [];
+    render();
+  });
+
+  const passwordCopy = document.getElementById('passwordCopy');
+  if(passwordCopy){
+    passwordCopy.addEventListener('click', async () => {
+      const pw = passwordCopy.dataset.password;
+      try{
+        await navigator.clipboard.writeText(pw);
+      } catch(e){
+        // Fallback for browsers without clipboard API access
+        const temp = document.createElement('textarea');
+        temp.value = pw;
+        temp.style.position = 'fixed';
+        temp.style.opacity = '0';
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+      }
+      const original = passwordCopy.innerHTML;
+      passwordCopy.classList.add('copied');
+      passwordCopy.innerHTML = 'Copied! <span class="copy-icon">✓</span>';
+      setTimeout(() => {
+        passwordCopy.classList.remove('copied');
+        passwordCopy.innerHTML = original;
+      }, 1500);
+    });
+  }
+
+  render();
+</script>
+
+</body>
+</html>
