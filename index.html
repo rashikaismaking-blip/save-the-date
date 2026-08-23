@@ -179,6 +179,12 @@
     white-space:nowrap;
     letter-spacing:0;
   }
+  .tile.tile-xxs{
+    font-size:clamp(6.5px, 1.9vw, 8px);
+    white-space:normal;
+    line-height:1.2;
+    letter-spacing:0;
+  }
   .tile.selected{
     background:var(--ink);
     color:#fff;
@@ -435,7 +441,7 @@
 <script>
   const categories = [
     { id:'yellow', name: 'PLACES WE\'VE CALLED HOME', words: ['LEAMINGTON','SWEDESBORO','PHILADELPHIA','LOS ANGELES'] },
-    { id:'green',  name: 'AIRLINE HUBS FROM LONG DISTANCE', words: ['DELTA','AMERICAN','BRITISH','VIRGIN'] },
+    { id:'green',  name: 'NATIONAL PARKS FROM OUR ROAD TRIP', words: ['ZION NATIONAL PARK','THE GATEWAY ARCH','ARCHES NATIONAL PARK','ROCKY MOUNTAIN NATIONAL PARK'] },
     { id:'blue',   name: 'WEDDING WEEKEND ITINERARY', words: ['SANGEET','CHURCH','COCKTAIL HOUR','RECEPTION'] },
     { id:'purple', name: 'ORLANDO', words: ['GATORS','SUNSHINE','MICKEY','MAGICAL'] },
   ];
@@ -469,6 +475,7 @@
 
   function lengthClass(word){
     const len = word.length;
+    if(len > 15) return ' tile-xxs';
     if(len > 12) return ' tile-xs';
     if(len > 8) return ' tile-sm';
     return '';
